@@ -15,7 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.text.input.ImeAction
-import com.example.tesis1.components.NavigationBarItem
+import com.example.tesis1.ui.theme.*
 import com.example.tesis1.ui.theme.AppTheme // Make sure to replace this with your actual theme package location
 import kotlinx.coroutines.launch
 
@@ -49,7 +49,7 @@ fun MainScreen() {
 
 @Composable
 fun RoomListScreen() {
-    Surface(color = MaterialTheme.colorScheme.background) {
+    Surface(color = surfaceLight) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -116,7 +116,7 @@ fun SearchBar(searchText: String, onSearchTextChange: (String) -> Unit) {
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChange,
-        placeholder = { Text("Search rooms") },
+        placeholder = { Text("Search in History") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
@@ -135,28 +135,28 @@ fun SearchBar(searchText: String, onSearchTextChange: (String) -> Unit) {
 @Composable
 fun BottomNavigationBar(currentRoute: String, onRouteSelected: (String) -> Unit) {
     NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,  // Establece un color de fondo visible
-        contentColor = MaterialTheme.colorScheme.onSurface   // Asegura que el contenido sea visible sobre el fondo
+        containerColor =MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         NavigationBarItem(
             selected = currentRoute == "Rooms",
             onClick = { onRouteSelected("Rooms") },
             label = { Text("Rooms") },
-            modifier = Modifier.weight(1f),  // Asigna un peso igual para distribución uniforme
+            modifier = Modifier.weight(1f),
             icon = {}
         )
         NavigationBarItem(
             selected = currentRoute == "History",
             onClick = { onRouteSelected("History") },
             label = { Text("History") },
-            modifier = Modifier.weight(1f),  // Asigna un peso igual para distribución uniforme
+            modifier = Modifier.weight(1f),
             icon = {}
         )
         NavigationBarItem(
             selected = currentRoute == "Settings",
             onClick = { onRouteSelected("Settings") },
             label = { Text("Settings") },
-            modifier = Modifier.weight(1f),  // Asigna un peso igual para distribución uniforme
+            modifier = Modifier.weight(1f),
             icon = {}
         )
     }
