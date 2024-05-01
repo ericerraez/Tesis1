@@ -18,6 +18,8 @@ import androidx.compose.ui.text.input.ImeAction
 import com.example.tesis1.ui.theme.*
 import com.example.tesis1.ui.theme.AppTheme // Make sure to replace this with your actual theme package location
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.Settings
 
 @Preview
 @Composable
@@ -135,29 +137,26 @@ fun SearchBar(searchText: String, onSearchTextChange: (String) -> Unit) {
 @Composable
 fun BottomNavigationBar(currentRoute: String, onRouteSelected: (String) -> Unit) {
     NavigationBar(
-        containerColor =MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         NavigationBarItem(
             selected = currentRoute == "Rooms",
             onClick = { onRouteSelected("Rooms") },
             label = { Text("Rooms") },
-            modifier = Modifier.weight(1f),
-            icon = {}
+            icon = { Icon(Icons.Filled.AccountCircle, contentDescription = "Rooms Icon") }
         )
         NavigationBarItem(
             selected = currentRoute == "History",
             onClick = { onRouteSelected("History") },
             label = { Text("History") },
-            modifier = Modifier.weight(1f),
-            icon = {}
+            icon = { Icon(Icons.Filled.VoiceChat, contentDescription = "Settings Icon") }
         )
         NavigationBarItem(
             selected = currentRoute == "Settings",
             onClick = { onRouteSelected("Settings") },
             label = { Text("Settings") },
-            modifier = Modifier.weight(1f),
-            icon = {}
+            icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings Icon") }
         )
     }
 }

@@ -6,7 +6,8 @@ plugins {
 android {
     namespace = "com.example.tesis1"
     compileSdk = 34
-
+    buildFeatures {
+        compose = true
     defaultConfig {
         applicationId = "com.example.tesis1"
         minSdk = 21
@@ -59,6 +60,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.benchmark.macro)
+    implementation(libs.my.library)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,4 +69,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-}
+}}

@@ -1,5 +1,8 @@
 [versions]
 agp = "8.3.2"
+androidxMaterial3AdaptiveNavigationSuite = "1.0.0-alpha06"
+androidx-macro-benchmark = "1.2.2"
+my-library = "1.4"
 kotlin = "1.9.0"
 coreKtx = "1.13.0"
 junit = "4.13.2"
@@ -8,8 +11,11 @@ espressoCore = "3.5.1"
 lifecycleRuntimeKtx = "2.7.0"
 activityCompose = "1.9.0"
 composeBom = "2024.04.01"
+material3WindowSizeClass = "1.2.1"
 
 [libraries]
+androidx-benchmark-macro = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidx-macro-benchmark" }
+my-library = { group = "com.myapplication", name = "mylibrary", version.ref = "my-library" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
