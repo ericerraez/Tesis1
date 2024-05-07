@@ -46,7 +46,7 @@ fun RoomTopics(navController: NavHostController) {
 
             Column(Modifier.weight(1f)) {
                 CustomCard(navController, title = "Software")
-                CustomCard(navController, title = "Marketing")
+                CustomCard(navController, title = "Diseño")
             }
         }
     }
