@@ -17,14 +17,14 @@ import com.auth0.android.provider.WebAuthProvider
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.callback.Callback
 import com.auth0.android.result.Credentials
 import com.example.tesis1.R
 
-@Preview
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     val context = LocalContext.current
     Surface(color = surfaceLight) {
         Column(
@@ -55,14 +55,14 @@ fun LoginScreen() {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = { loginWithAuth0(context) },
+                    onClick = { loginWithAuth0(context, navController) },
                     colors = ButtonDefaults.buttonColors(containerColor = inversePrimaryLight)
                 ) {
                     Text("Login")
                 }
 
                 Button(
-                    onClick = { signUpWithAuth0(context) },
+                    onClick = { },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                 ) {
                     Text("Sign Up")
@@ -71,7 +71,7 @@ fun LoginScreen() {
         }
     }
 }
-private fun loginWithAuth0(context: Context) {
+private fun loginWithAuth0(context: Context, navController: NavController) {
     val clientId = context.getString(R.string.com_auth0_client_id)
     val domain = context.getString(R.string.com_auth0_domain)
     val scheme = context.getString(R.string.com_auth0_scheme)
@@ -83,29 +83,11 @@ private fun loginWithAuth0(context: Context) {
             override fun onSuccess(result: Credentials) {
                 val accessToken = result.accessToken
                 Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                navController.navigate("room")
             }
 
             override fun onFailure(error: AuthenticationException) {
                 Toast.makeText(context, "Error de inicio de sesión: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
-}
-private fun signUpWithAuth0(context: Context) {
-    val clientId = context.getString(R.string.com_auth0_client_id)
-    val domain = context.getString(R.string.com_auth0_domain)
-    val scheme = context.getString(R.string.com_auth0_scheme)
-
-    val account = Auth0(clientId, domain)
-    WebAuthProvider.login(account)
-        .withScheme(scheme)
-        .start(context, object : Callback<Credentials, AuthenticationException> {
-            override fun onSuccess(result: Credentials) {
-                val accessToken = result.accessToken
-                Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onFailure(error: AuthenticationException) {
-                Toast.makeText(context, "Error de registro: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
 }

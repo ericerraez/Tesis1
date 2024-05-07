@@ -10,7 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.tesis1.screens.LoginScreen
+import com.example.tesis1.screens.RoomScreen
+import com.example.tesis1.screens.RoomTopics
 import com.example.tesis1.ui.theme.AppTheme
 
 
@@ -18,14 +23,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
             AppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ) {
-                    LoginScreen()
+                ){
+                    NavHost(navController = navController, startDestination = "login") {
+                        composable("login") { LoginScreen(navController) }
+                        composable("room") { RoomScreen(navController) }
+                        composable("topics") { RoomTopics(navController) }
+                    }
                 }
+
             }
         }
     }
