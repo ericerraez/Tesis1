@@ -12,7 +12,7 @@ object Destinations {
     const val HistoryScreen = "history_screen"
     const val TopicsScreen = "topics_screen"
 }
-
+//
 @Composable
 fun AppNavigator(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
