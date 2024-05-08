@@ -35,12 +35,14 @@ fun RoomTopics(navController: NavHostController) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
+                    tint = surfaceContainerDark,
                     modifier = Modifier.clickable { navController.navigateUp() }
                 )
                 Text(
                     text = "Rooms",
                     style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = surfaceContainerDark
                 )
             }
 

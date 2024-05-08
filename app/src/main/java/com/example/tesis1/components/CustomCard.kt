@@ -28,7 +28,7 @@ fun CustomCard(navController: NavController, title: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    navController.navigate("rooms")
+                    navController.navigate("topics")
                 }
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -37,13 +37,13 @@ fun CustomCard(navController: NavController, title: String) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = surfaceContainerDark
                 )
 
                 Text(
                     text = "Hola, soy de software",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = surfaceContainerDark
                 )
             }
 
@@ -52,7 +52,7 @@ fun CustomCard(navController: NavController, title: String) {
             Text(
                 text = "10:00am",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurface
+                color = surfaceContainerDark
             )
         }
     }

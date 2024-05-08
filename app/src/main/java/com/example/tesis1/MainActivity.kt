@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    NavHost(navController = navController, startDestination = "login") {
+                    NavHost(navController = navController, startDestination = "room") {
                         composable("login") { LoginScreen(navController) }
                         composable("room") { RoomScreen(navController) }
                         composable("topics") { RoomTopics(navController) }

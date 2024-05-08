@@ -43,12 +43,12 @@ fun SearchBar(
             Icon(
                 imageVector = Icons.Filled.Search,
                 contentDescription = "Search",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = surfaceContainerDark,
                 modifier = Modifier.padding(8.dp)
             )
             Text(
                 text = searchText.text.ifEmpty { "Search in Rooms" },
-                color = if (searchText.text.isEmpty()) MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSecondary,
+                color = if (searchText.text.isEmpty()) surfaceContainerDark.copy(alpha = 0.5f) else surfaceContainerDark,
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
                     .weight(1f)
