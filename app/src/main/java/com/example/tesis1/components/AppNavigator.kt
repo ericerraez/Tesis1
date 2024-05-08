@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.tesis1.HistoryScreen
+import com.example.tesis1.screens.HistoryScreen
 import com.example.tesis1.screens.TopicsScreen
 
 object Destinations {

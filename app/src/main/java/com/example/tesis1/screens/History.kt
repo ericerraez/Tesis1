@@ -50,11 +50,12 @@ fun HistoryScreen(onRoomSelected: (String) -> Unit) {
 @Composable
 fun PreviewHistoryScreen() {
     AppTheme {
-        com.example.tesis1.HistoryScreen(onRoomSelected = { roomName ->
+        HistoryScreen(onRoomSelected = { roomName ->
             println("Navigating to topics of $roomName")
         })
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

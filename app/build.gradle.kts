@@ -67,8 +67,14 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation ("androidx.compose.material:material-icons-extended:1.6.7")
-    implementation ("androidx.navigation:navigation-compose:2.4.2")
+    implementation (libs.androidx.material.icons.extended)
+    implementation (libs.androidx.navigation.compose.v242)
+    implementation ("androidx.compose.material3:material3:1.2.1" )// Reemplaza con la versión más reciente
+        implementation ("androidx.compose.ui:ui:1.6.7") // Reemplaza con la versión más reciente
+        implementation (libs.androidx.activity.compose.v140) // Reemplaza con la versión más reciente
+        implementation ("androidx.navigation:navigation-compose:2.7.7") // Reemplaza con la versión más reciente
     }
+
+
 
 
