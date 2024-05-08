@@ -1,53 +1,38 @@
 package com.example.tesis1
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.tesis1.screens.HistoryScreen
-import com.example.tesis1.ui.theme.AppTheme
+import androidx.compose.ui.unit.dp
+import com.example.tesis1.screens.RoomItem
+import com.example.tesis1.ui.theme.surfaceLight
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            AppTheme {
-                AppNavigation()
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HistoryScreen(onRoomSelected: (String) -> Unit) {
+    Surface(color = surfaceLight) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            var searchText by remember { mutableStateOf("") }
+            com.example.tesis1.screens.SearchBar(
+                searchText = searchText,
+                onSearchTextChange = { searchText = it })
+            Spacer(modifier = Modifier.height(16.dp))
+
+            val rooms = listOf("Marketing 1", "Marketing 2", "Marketing 3", "Marketing 4", "Marketing 5")
+            val filteredRooms = if (searchText.isBlank()) rooms else rooms.filter { it.contains(searchText, ignoreCase = true) }
+
+            filteredRooms.forEach { room ->
+                RoomItem(roomName = room, lastInteractionTime = "12:34 PM", onClick = { onRoomSelected(room) })
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
-}
-
-@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
-    ) { innerPadding ->
-        NavHost(navController = navController, startDestination = "historyScreen", Modifier.padding(innerPadding)) {
-            composable("historyScreen") {
-                // Pass a lambda that navigates to the topics screen
-                HistoryScreen(onNavigateToTopics = { roomName ->
-                    navController.navigate("topicsScreen/$roomName")
-                })
-            }
-            composable("topicsScreen/{roomName}") { backStackEntry ->
-                // Get the roomName from the back stack entry
-                val roomName = backStackEntry.arguments?.getString("roomName") ?: "Unknown"
-                TopicsScreen(roomName = roomName)
-            }
-        }
-    }
-}
-
-@Composable
-fun TopicsScreen(roomName: String) {
-    // Dummy composable for the topics screen
-    Text(text = "Topics for $roomName", style = MaterialTheme.typography.headlineMedium)
 }

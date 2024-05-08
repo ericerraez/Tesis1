@@ -14,14 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.tesis1.ui.theme.AppTheme
 import com.example.tesis1.ui.theme.surfaceLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(onNavigateToTopics: (String) -> Unit) {
+fun HistoryScreen(onRoomSelected: (String) -> Unit) {
     Surface(color = surfaceLight) {
         Column(
             modifier = Modifier
@@ -34,11 +34,12 @@ fun HistoryScreen(onNavigateToTopics: (String) -> Unit) {
             SearchBar(searchText = searchText, onSearchTextChange = { searchText = it })
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Example list of rooms
             val rooms = listOf("Marketing 1", "Marketing 2", "Marketing 3", "Marketing 4", "Marketing 5")
             val filteredRooms = if (searchText.isBlank()) rooms else rooms.filter { it.contains(searchText, ignoreCase = true) }
 
             filteredRooms.forEach { room ->
-                RoomItem(roomName = room, lastInteractionTime = "12:34 PM", onClick = { onNavigateToTopics(room) })
+                RoomItem(roomName = room, lastInteractionTime = "12:34 PM", onClick = { onRoomSelected(room) })
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
@@ -49,12 +50,11 @@ fun HistoryScreen(onNavigateToTopics: (String) -> Unit) {
 @Composable
 fun PreviewHistoryScreen() {
     AppTheme {
-        HistoryScreen(onNavigateToTopics = { roomName ->
+        com.example.tesis1.HistoryScreen(onRoomSelected = { roomName ->
             println("Navigating to topics of $roomName")
         })
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

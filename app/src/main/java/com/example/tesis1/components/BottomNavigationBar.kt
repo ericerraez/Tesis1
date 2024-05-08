@@ -40,7 +40,6 @@ fun BottomNavigationBar(navController: NavController) {
                 selected = currentRoute == screen.route,
                 onClick = {
                     navController.navigate(screen.route) {
-                        // Avoid multiple copies of the same destination when reselecting the same item
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
                         }
