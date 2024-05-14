@@ -5,16 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cf055699-6918-496a-97fd-4c91fa8947ad" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/RoomList.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/components/AppNavigator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/Settings.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/Topics.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Home.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Home.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/tesis1/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/Home.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/Home.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/tesis1/components/BottomNavigationBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/components/BottomNavigationBar.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/History.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/History.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/tesis1/screens/RoomList.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../gradle/libs.versions.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -62,6 +64,8 @@
       <updated>1714150654810</updated>
       <workItem from="1715706273369" duration="25000" />
       <workItem from="1715706347278" duration="10000" />
+      <workItem from="1715707845141" duration="4000" />
+      <workItem from="1715707859050" duration="34000" />
     </task>
     <servers />
   </component>
