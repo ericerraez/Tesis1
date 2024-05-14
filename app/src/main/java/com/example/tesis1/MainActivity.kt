@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.example.tesis1.components.BottomNavigationBar
+import com.example.tesis1.screens.BottomNavigationBar
 import com.example.tesis1.screens.RoomListScreen
 import kotlinx.coroutines.launch
 
