@@ -13,8 +13,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-        manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
-        manifestPlaceholders["auth0Scheme"] = "https"
+        manifestPlaceholders["auth0Domain"] = "dev-anhvu3vb8rovtp70.us.auth0.com"
+        manifestPlaceholders["auth0Scheme"] = "demo"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

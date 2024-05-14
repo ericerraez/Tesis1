@@ -15,8 +15,11 @@ import com.example.tesis1.ui.theme.*
 import com.auth0.android.Auth0
 import com.auth0.android.provider.WebAuthProvider
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.callback.Callback
@@ -37,14 +40,16 @@ fun LoginScreen(navController: NavController) {
             Text(
                 text = "ANI",
                 style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.tertiary,
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = surfaceContainerDark,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
             Text(
                 text = "Assistant Neural Interface",
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.tertiary,
+                color = surfaceContainerDark,
                 modifier = Modifier
                     .padding(bottom = 64.dp)
                     .align(Alignment.CenterHorizontally)
@@ -83,6 +88,9 @@ private fun loginWithAuth0(context: Context, navController: NavController) {
             override fun onSuccess(result: Credentials) {
                 val accessToken = result.accessToken
                 Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                Log.d("LoginWithAuth0", "Inicio de sesión exitoso. Token de acceso: $accessToken")
+
+                Log.d("LoginWithAuth0", "Navegando a la pantalla de room...")
                 navController.navigate("room")
             }
 
