@@ -21,15 +21,14 @@ import androidx.compose.ui.unit.sp
 import com.example.tesis1.ui.theme.*
 
 @Composable
-fun CircularCard(title: String) {
+fun CircularCard(title: String, modifier: Modifier = Modifier) {
     Surface(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.size(117.dp),
         shape = CircleShape,
         color = primaryDarkMediumContrast,
     ) {
         Box(
             modifier = Modifier
-                .size(117.dp)
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -50,15 +49,14 @@ fun CircularCard(title: String) {
 }
 
 @Composable
-fun SquareCard(title: String) {
+fun SquareCard(title: String, modifier: Modifier = Modifier) {
     Surface(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.size(115.dp),
         color = surfaceLight,
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
             modifier = Modifier
-                .size(117.dp)
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
