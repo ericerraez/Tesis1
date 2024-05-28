@@ -1,26 +1,47 @@
 package com.example.tesis1.screens
 
-import androidx.compose.foundation.layout.*
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.tesis1.ApiService
 import com.example.tesis1.ui.theme.AppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import retrofit2.http.GET
 
 @Composable
 fun RecordScreen() {
-    var transcription by remember { mutableStateOf("") }
+    var transcription = remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        Log.d("RecordScreen", "LaunchedEffect triggered")
+        coroutineScope.launch {
+            fetchLastTranscription { transcriptionText ->
+                Log.d("RecordScreen", "Transcription fetched: $transcriptionText")
+                transcription.value = transcriptionText
+            }
+        }
+    }
 
     AppTheme {
         Column(
@@ -28,41 +49,43 @@ fun RecordScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = transcription)
-            // Llama a fetchTranscription cuando se inicia la pantalla
-            LaunchedEffect(Unit) {
-                fetchTranscription { transcription = it }
-            }
+            Text(text = transcription.value)
         }
     }
 }
 
-fun fetchTranscription(onTranscriptionFetched: (String) -> Unit) {
-    val url = URL("http://localhost:8000/transcriptor/convert/")
-    CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.doInput = true
+fun fetchLastTranscription(onTranscriptionFetched: (String) -> Unit) {
+    Log.d("fetchLastTranscription", "Started fetching last transcription")
+    val retrofit = Retrofit.Builder()
+        .baseUrl("http://192.168.56.1:8000/api/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(OkHttpClient.Builder().build())
+        .build()
 
-            val inputStream = connection.inputStream
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val response = StringBuilder()
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                response.append(line)
-            }
-            reader.close()
-
-            val jsonResponse = JSONObject(response.toString())
-            val transcription = jsonResponse.getString("text")
-            withContext(Dispatchers.Main) {
+    val apiService = retrofit.create(ApiService::class.java)
+    apiService.getLastTranscription().enqueue(object : Callback<ResponseBody> {
+        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+            Log.d("fetchLastTranscription", "Received response: $response")
+            if (response.isSuccessful) {
+                val responseBody = response.body()?.string()
+                val jsonResponse = responseBody?.let { JSONObject(it) }
+                val transcription = jsonResponse?.getString("text") ?: "No transcription found"
                 onTranscriptionFetched(transcription)
+            } else {
+                onTranscriptionFetched("Failed to fetch transcription")
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
-    }
+
+        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            Log.e("fetchLastTranscription", "Failed to fetch transcription: ${t.message}")
+            onTranscriptionFetched("Error: ${t.message}")
+        }
+    })
+}
+
+interface ApiService {
+    @GET("get_last_transcription/")
+    fun getLastTranscription(): Call<ResponseBody>
 }
 
 @Preview(showBackground = true)

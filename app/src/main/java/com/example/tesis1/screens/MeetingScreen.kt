@@ -1,5 +1,14 @@
 package com.example.tesis1.screens
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.media.MediaRecorder
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,42 +23,81 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import com.example.tesis1.ApiService
 import com.example.tesis1.components.CircularCard
 import com.example.tesis1.components.SquareCard
 import com.example.tesis1.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import kotlin.math.min
 
 @Composable
 fun MeetingScreen(navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
-    val elapsedTime = remember { mutableIntStateOf(0) }
+    val elapsedTime = remember { mutableStateOf(0) }
+    val context = LocalContext.current
+
+    var mediaRecorder by remember { mutableStateOf<MediaRecorder?>(null) }
+    var audioFile by remember { mutableStateOf<File?>(null) }
+    var transcription by remember { mutableStateOf("") }
+    var isRecording by remember { mutableStateOf(false) }
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            startRecording(context) { recorder, file ->
+                mediaRecorder = recorder
+                audioFile = file
+                isRecording = true
+                Handler(Looper.getMainLooper()).postDelayed({
+                    stopRecording(mediaRecorder)
+                    isRecording = false
+                    audioFile?.let { file ->
+                        uploadAudio(file) { transcriptionText ->
+                            transcription = transcriptionText
+                        }
+                    }
+                }, 5000)
+            }
+        } else {
+            Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             while (true) {
                 delay(1000)
-                elapsedTime.intValue++
+                elapsedTime.value++
             }
         }
     }
 
-    val minutes = elapsedTime.intValue / 60
-    val seconds = elapsedTime.intValue % 60
-    val participants = mutableListOf("Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5",
+    val minutes = elapsedTime.value / 60
+    val seconds = elapsedTime.value % 60
+    val participants = listOf("Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5",
         "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10", "Participant 11", "Participant 12",
         "Participant 13", "Participant 14", "Participant 15", "Participant 16", "Participant 17", "Participant 18", "Participant 19", "Participant 20",
         "Participant 21", "Participant 22", "Participant 23", "Participant 24", "Participant 25")
@@ -139,7 +187,30 @@ fun MeetingScreen(navController: NavHostController) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .clickable { /* Lógica de onClick aquí */ }
+                    .clickable {
+                        if (ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.RECORD_AUDIO
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                        } else {
+                            startRecording(context) { recorder, file ->
+                                mediaRecorder = recorder
+                                audioFile = file
+                                isRecording = true
+                                Handler(Looper.getMainLooper()).postDelayed({
+                                    stopRecording(mediaRecorder)
+                                    isRecording = false
+                                    audioFile?.let { file ->
+                                        uploadAudio(file) { transcriptionText ->
+                                            transcription = transcriptionText
+                                        }
+                                    }
+                                }, 5000)
+                            }
+                        }
+                    }
                     .background(
                         color = primaryLight,
                         shape = RoundedCornerShape(30.dp))
@@ -152,7 +223,7 @@ fun MeetingScreen(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
-                    text = "Speak",
+                    text = if (isRecording) "Recording..." else "Speak",
                     style = MaterialTheme.typography.labelLarge,
                     color = onPrimaryLight
                 )
@@ -161,6 +232,57 @@ fun MeetingScreen(navController: NavHostController) {
     }
 }
 
+fun startRecording(context: Context, onStarted: (MediaRecorder, File) -> Unit) {
+    val file = File.createTempFile("audio", ".3gp", context.cacheDir)
+    val recorder = MediaRecorder().apply {
+        setAudioSource(MediaRecorder.AudioSource.MIC)
+        setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+        setOutputFile(file.absolutePath)
+        prepare()
+        start()
+    }
+    onStarted(recorder, file)
+}
+
+fun stopRecording(mediaRecorder: MediaRecorder?) {
+    mediaRecorder?.apply {
+        try {
+            stop()
+        } catch (e: RuntimeException) {
+            // handle stop() failed case
+        }
+        release()
+    }
+}
+
+fun uploadAudio(file: File, onTranscriptionFetched: (String) -> Unit) {
+    val retrofit = Retrofit.Builder()
+        .baseUrl("http://192.168.56.1:8000/api/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .client(OkHttpClient.Builder().build())
+        .build()
+
+    val apiService = retrofit.create(ApiService::class.java)
+    val requestBody = RequestBody.create("audio/3gp".toMediaTypeOrNull(), file)
+    val body = MultipartBody.Part.createFormData("audio", file.name, requestBody)
+
+    apiService.uploadAudio(body).enqueue(object : Callback<ResponseBody> {
+        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+            if (response.isSuccessful) {
+                val jsonResponse = response.body()?.string()?.let { JSONObject(it) }
+                val transcription = jsonResponse?.getString("text") ?: "No transcription found"
+                onTranscriptionFetched(transcription)
+            } else {
+                onTranscriptionFetched("Failed to upload audio")
+            }
+        }
+
+        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            onTranscriptionFetched("Error: ${t.message}")
+        }
+    })
+}
 
 @Composable
 fun BackArrow(
