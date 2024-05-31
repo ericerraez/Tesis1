@@ -67,7 +67,7 @@ fun fetchLastTranscription(onTranscriptionFetched: (String) -> Unit) {
         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
             Log.d("fetchLastTranscription", "Received response: $response")
             if (response.isSuccessful) {
-                val responseBody = response.body()?.string()
+                 val responseBody = response.body()?.string()
                 val jsonResponse = responseBody?.let { JSONObject(it) }
                 val transcription = jsonResponse?.getString("text") ?: "No transcription found"
                 onTranscriptionFetched(transcription)
