@@ -20,23 +20,25 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import com.example.tesis1.components.NavBar
 import com.example.tesis1.ui.theme.AppTheme
 
 @Preview
 @Composable
 fun PreviewHistoryScreen() {
     AppTheme {
-        HistoryScreen()
+        HistoryScreen(navController = NavHostController(LocalContext.current))
     }
 }
 
 @Composable
-fun HistoryScreen() {
+fun HistoryScreen(navController: NavHostController) {
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -56,6 +58,9 @@ fun HistoryScreen() {
                 HistoryItem(item)
                 Spacer(modifier = Modifier.height(8.dp))
             }
+            Spacer(modifier = Modifier.weight(1f))
+
+            NavBar(currentScreen = "History", navController = navController)
         }
     }
 }

@@ -98,9 +98,7 @@ fun MeetingScreen(navController: NavHostController) {
     val minutes = elapsedTime.value / 60
     val seconds = elapsedTime.value % 60
     val participants = listOf("Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5",
-        "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10", "Participant 11", "Participant 12",
-        "Participant 13", "Participant 14", "Participant 15", "Participant 16", "Participant 17", "Participant 18", "Participant 19", "Participant 20",
-        "Participant 21", "Participant 22", "Participant 23", "Participant 24", "Participant 25")
+        "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10", "Participant 11")
 
     Surface(
         color = surfaceDimLight,

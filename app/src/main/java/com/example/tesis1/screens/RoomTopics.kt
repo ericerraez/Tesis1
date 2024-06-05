@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.tesis1.components.CustomCardTopics
+import com.example.tesis1.components.NavBar
 import com.example.tesis1.components.SearchBar
 import com.example.tesis1.ui.theme.*
 
@@ -51,7 +52,7 @@ fun RoomTopics(navController: NavHostController) {
                     modifier = Modifier.clickable { navController.navigateUp() }
                 )
                 Text(
-                    text = "Rooms",
+                    text = "Topics",
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(start = 8.dp),
                     color = surfaceContainerDark
@@ -83,6 +84,10 @@ fun RoomTopics(navController: NavHostController) {
             Column(Modifier.weight(1f)) {
                 CustomCardTopics(navController, title = "Software", searchText = searchText)
                 CustomCardTopics(navController, title = "Diseño", searchText = searchText)
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                NavBar(currentScreen = "Room", navController = navController)
             }
         }
     }
