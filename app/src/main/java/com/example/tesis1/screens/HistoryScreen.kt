@@ -1,40 +1,37 @@
 package com.example.tesis1.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.tesis1.R
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tesis1.components.NavBar
 import com.example.tesis1.ui.theme.AppTheme
 
-@Preview
 @Composable
-fun PreviewHistoryScreen() {
-    AppTheme {
-        HistoryScreen(navController = NavHostController(LocalContext.current))
-    }
-}
-
-@Composable
-fun HistoryScreen(navController: NavHostController) {
+fun HistoryScreen(navController: NavHostController, onItemClick: (String) -> Unit) {
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
@@ -47,16 +44,20 @@ fun HistoryScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             val historyItems = listOf(
-                "Marketing 1",
-                "Marketing 2",
-                "Marketing 3",
-                "Marketing 4",
-                "Marketing 5"
+                HistoryData("Marketing 1", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
+                HistoryData("Marketing 2", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
+                HistoryData("Marketing 3", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
+                HistoryData("Marketing 4", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
+                HistoryData("Marketing 5", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground))
             )
 
-            historyItems.forEach { item ->
-                HistoryItem(item)
-                Spacer(modifier = Modifier.height(8.dp))
+            val filteredItems = historyItems.filter { it.title.contains(searchText, ignoreCase = true) }
+
+            LazyColumn {
+                items(filteredItems) { item ->
+                    HistoryItem(item, onItemClick)
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
 
@@ -65,16 +66,55 @@ fun HistoryScreen(navController: NavHostController) {
     }
 }
 
+data class HistoryData(
+    val title: String,
+    val subtitle: String,
+    val members: String,
+    val time: String,
+    val image: Painter
+)
+
 @Composable
-fun HistoryItem(item: String) {
-    Text(
-        text = item,
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-        modifier = Modifier.fillMaxWidth()
-    )
+fun HistoryItem(item: HistoryData, onItemClick: (String) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onItemClick(item.title) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = item.image,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(48.dp)
+                .padding(end = 8.dp)
+        )
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = "${item.members} • ${item.subtitle}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+        Text(
+            text = item.time,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +123,7 @@ fun SearchBar(searchText: String, onSearchTextChange: (String) -> Unit) {
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChange,
-        placeholder = { Text("Search history") },
+        placeholder = { Text("Search in History") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp),
@@ -96,4 +136,12 @@ fun SearchBar(searchText: String, onSearchTextChange: (String) -> Unit) {
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewHistoryScreen() {
+    AppTheme {
+        HistoryScreen(navController = rememberNavController(), onItemClick = {})
+    }
 }
