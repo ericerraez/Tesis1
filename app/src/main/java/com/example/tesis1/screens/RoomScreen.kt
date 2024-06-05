@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.tesis1.components.CustomCard
+import com.example.tesis1.components.NavBar
 import com.example.tesis1.components.SearchBar
 import com.example.tesis1.ui.theme.*
 
@@ -38,6 +39,9 @@ fun RoomScreen(navController: NavHostController) {
             CustomCard(navController, title = "Design", searchText = searchText)
             CustomCard(navController, title = "Nursing", searchText = searchText)
 
+            Spacer(modifier = Modifier.weight(1f))
+
+            NavBar(currentScreen = "Room", navController = navController)
         }
     }
 }

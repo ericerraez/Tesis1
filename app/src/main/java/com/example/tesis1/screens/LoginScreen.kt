@@ -55,23 +55,12 @@ fun LoginScreen(navController: NavController) {
                     .align(Alignment.CenterHorizontally)
             )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Button(
+                onClick = { loginWithAuth0(context, navController) },
+                colors = ButtonDefaults.buttonColors(containerColor = inversePrimaryLight),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Button(
-                    onClick = { loginWithAuth0(context, navController) },
-                    colors = ButtonDefaults.buttonColors(containerColor = inversePrimaryLight)
-                ) {
-                    Text("Login")
-                }
-
-                Button(
-                    onClick = { },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-                ) {
-                    Text("Sign Up")
-                }
+                Text("Login")
             }
         }
     }
@@ -98,4 +87,10 @@ private fun loginWithAuth0(context: Context, navController: NavController) {
                 Toast.makeText(context, "Error de inicio de sesión: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    LoginScreen(navController = NavController(LocalContext.current))
 }

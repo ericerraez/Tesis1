@@ -5,10 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,15 +20,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tesis1.R
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.tesis1.components.NavBar
 import com.example.tesis1.ui.theme.AppTheme
 
 @Composable
-fun HistoryScreen(onItemClick: (String) -> Unit) {
+fun HistoryScreen(navController: NavHostController, onItemClick: (String) -> Unit) {
     Surface(color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -54,6 +59,9 @@ fun HistoryScreen(onItemClick: (String) -> Unit) {
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
+            Spacer(modifier = Modifier.weight(1f))
+
+            NavBar(currentScreen = "History", navController = navController)
         }
     }
 }
@@ -134,6 +142,6 @@ fun SearchBar(searchText: String, onSearchTextChange: (String) -> Unit) {
 @Composable
 fun PreviewHistoryScreen() {
     AppTheme {
-        HistoryScreen(onItemClick = {})
+        HistoryScreen(navController = rememberNavController(), onItemClick = {})
     }
 }
