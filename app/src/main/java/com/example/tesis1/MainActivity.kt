@@ -23,10 +23,12 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.tesis1.screens.HistoryScreen
 import com.example.tesis1.screens.LoginScreen
 import com.example.tesis1.screens.MeetingScreen
 import com.example.tesis1.screens.RoomScreen
 import com.example.tesis1.screens.RoomTopics
+import com.example.tesis1.screens.TopicsScreen
 import com.example.tesis1.ui.theme.AppTheme
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -72,6 +74,11 @@ class MainActivity : ComponentActivity() {
                         composable("room") { RoomScreen(navController) }
                         composable("topics") { RoomTopics(navController) }
                         composable("meeting") { MeetingScreen(navController) }
+                        composable("history") { HistoryScreen(navController) }
+                        composable("topics/{roomName}") { backStackEntry ->
+                            val roomName = backStackEntry.arguments?.getString("roomName") ?: "Default Room"
+                            TopicsScreen(roomName = roomName, onBack = { navController.popBackStack() })
+                        }
                     }
                 }
             }
@@ -97,7 +104,6 @@ class MainActivity : ComponentActivity() {
             prepare()
             start()
         }
-
 
         Handler(Looper.getMainLooper()).postDelayed({
             stopRecording()
