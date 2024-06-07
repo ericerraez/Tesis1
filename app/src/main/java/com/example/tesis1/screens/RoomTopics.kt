@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.tesis1.components.CustomCardTopics
+import com.example.tesis1.components.CustomCard
 import com.example.tesis1.components.SearchBar
 import com.example.tesis1.ui.theme.*
 
@@ -81,8 +81,8 @@ fun RoomTopics(navController: NavHostController) {
             }
 
             Column(Modifier.weight(1f)) {
-                CustomCardTopics(navController, title = "Software", searchText = searchText)
-                CustomCardTopics(navController, title = "Diseño", searchText = searchText)
+                CustomCard(navController, title = "Software", searchText = searchText)
+                CustomCard(navController, title = "Diseño", searchText = searchText)
             }
         }
     }
