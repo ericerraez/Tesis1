@@ -4,6 +4,8 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -23,18 +25,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.tesis1.components.CustomCard
+import com.example.tesis1.components.CustomCardTopics
+import com.example.tesis1.components.NavBar
 import com.example.tesis1.components.SearchBar
 import com.example.tesis1.ui.theme.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RoomTopics(navController: NavHostController) {
+fun RoomTopics(navController: NavHostController, roomTitle: String, topicTitles: List<String>) {
     val isSearchVisible = remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
+    var selectedRoom by remember { mutableStateOf<String?>(null) }
     Surface(
         color = surfaceDimLight,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         Column {
             Row(
@@ -51,7 +56,7 @@ fun RoomTopics(navController: NavHostController) {
                     modifier = Modifier.clickable { navController.navigateUp() }
                 )
                 Text(
-                    text = "Rooms",
+                    text = roomTitle,
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(start = 8.dp),
                     color = surfaceContainerDark
@@ -77,13 +82,36 @@ fun RoomTopics(navController: NavHostController) {
             }
 
             if (isSearchVisible.value) {
-                SearchBar(onSearchTextChanged = {text -> searchText = text})
+                SearchBar(
+                    searchText = searchText,
+                    onSearchTextChanged = { text -> searchText = text },
+                    roomTitles = topicTitles,
+                    topicTitles = emptyList(),
+
+                    onSearchRoomSelected = { room ->
+                        selectedRoom = room
+                    },
+                    onSearchTopicSelected = { topic ->
+                        selectedRoom = topic
+                    }
+                )
             }
 
-            Column(Modifier.weight(1f)) {
-                CustomCard(navController, title = "Software", searchText = searchText)
-                CustomCard(navController, title = "Diseño", searchText = searchText)
+            Column(Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+            ) {
+                topicTitles.forEach { topicTitle ->
+                    CustomCardTopics(
+                        navController,
+                        topicTitle = topicTitle,
+                        topicSubtitle = roomTitle,
+                        searchText = searchText
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
             }
+            NavBar(currentScreen = "Room", navController = navController)
         }
     }
 }
@@ -91,4 +119,6 @@ fun RoomTopics(navController: NavHostController) {
 @Preview
 @Composable
 fun RoomTopicsPreview() {
-    RoomTopics(navController = NavHostController(LocalContext.current))}
+    RoomTopics(navController = NavHostController(LocalContext.current), roomTitle = "Marketing 1", topicTitles = listOf("Estrategias Marketing",
+        "Diseño de Interfaces", "Desarrollo de Software", "Cuidado del Ambiente", "Cuidado Canino"))
+}

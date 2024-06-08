@@ -75,10 +75,10 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.weight(1f)
                         ) {
                             composable("login") { LoginScreen(navController) }
-                            composable("room") { RoomScreen(navController) }
-                            composable("topics") { RoomTopics(navController) }
+                            composable("room") { RoomScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
+                            composable("topics") { RoomTopics(navController, roomTitle = "Default Room", topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
                             composable("meeting") { MeetingScreen(navController) }
-                            composable("history") { HistoryScreen(navController) }
+                            composable("history") { HistoryScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
                             composable("topics/{roomName}") { backStackEntry ->
                                 val roomName = backStackEntry.arguments?.getString("roomName") ?: "Default Room"
                                 TopicsScreen(roomName = roomName, onBack = { navController.popBackStack() }, navController = navController)
@@ -113,6 +113,7 @@ class MainActivity : ComponentActivity() {
             prepare()
             start()
         }
+
 
         Handler(Looper.getMainLooper()).postDelayed({
             stopRecording()
@@ -151,18 +152,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppTheme {
-        Greeting("Android")
-    }
-}

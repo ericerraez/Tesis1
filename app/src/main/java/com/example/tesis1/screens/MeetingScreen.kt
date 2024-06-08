@@ -55,7 +55,7 @@ import kotlin.math.min
 @Composable
 fun MeetingScreen(navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
-    val elapsedTime = remember { mutableStateOf(0) }
+    val elapsedTime = remember { mutableIntStateOf(0) }
     val context = LocalContext.current
 
     var mediaRecorder by remember { mutableStateOf<MediaRecorder?>(null) }
@@ -90,13 +90,13 @@ fun MeetingScreen(navController: NavHostController) {
         coroutineScope.launch {
             while (true) {
                 delay(1000)
-                elapsedTime.value++
+                elapsedTime.intValue++
             }
         }
     }
 
-    val minutes = elapsedTime.value / 60
-    val seconds = elapsedTime.value % 60
+    val minutes = elapsedTime.intValue / 60
+    val seconds = elapsedTime.intValue % 60
     val participants = listOf("Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5",
         "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10", "Participant 11")
 

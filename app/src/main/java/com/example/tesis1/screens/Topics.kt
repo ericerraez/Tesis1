@@ -10,41 +10,35 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavHostController
 import com.example.tesis1.components.NavBar
 import com.example.tesis1.ui.theme.AppTheme
 import com.example.tesis1.ui.theme.surfaceLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopicsScreen(roomName: String, onBack: () -> Unit, navController: NavController) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Surface(color = surfaceLight) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    TopAppBar(
-                        title = { Text(text = roomName) },
-                        navigationIcon = {
-                            IconButton(onClick = onBack) {
-                                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-                            }
-                        },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = surfaceLight
-                        )
-                    )
-                    Divider()
-                    LazyColumn {
-                        items(getTopics()) { topic ->
-                            TopicItem(topicName = topic.first, topicTime = topic.second)
+fun TopicsScreen(navController: NavHostController, roomName: String, onBack: () -> Unit) {
+    AppTheme {
+        Surface(color = surfaceLight) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                TopAppBar(
+                    title = { Text(text = roomName) },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                         }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = surfaceLight
+                    )
+                )
+                Divider()
+                LazyColumn {
+                    items(getTopics()) { topic ->
+                        TopicItem(topicName = topic.first, topicTime = topic.second)
                     }
                 }
             }
@@ -93,5 +87,9 @@ fun getTopics(): List<Pair<String, String>> = listOf(
 @Preview(showBackground = true)
 @Composable
 fun PreviewTopicsScreen() {
-    TopicsScreen(roomName = "Marketing 1", onBack = {}, navController = rememberNavController())
+    TopicsScreen(
+        navController = NavHostController(LocalContext.current),
+        roomName = "Room 1",
+        onBack = { /* Acción de retroceso simulada para la vista previa */ }
+    )
 }
