@@ -71,10 +71,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController = navController, startDestination = "login") {
                         composable("login") { LoginScreen(navController) }
-                        composable("room") { RoomScreen(navController) }
-                        composable("topics") { RoomTopics(navController) }
+                        composable("room") { RoomScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
+                        composable("topics") { RoomTopics(navController, roomTitle = "Default Room", topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
                         composable("meeting") { MeetingScreen(navController) }
-                        composable("history") { HistoryScreen(navController) }
+                        composable("history") { HistoryScreen(navController = navController, onItemClick = { item ->
+                            navController.navigate("details/$item")
+                        }) }
                         composable("history_topics/{roomName}") { backStackEntry ->
                             val roomName = backStackEntry.arguments?.getString("roomName") ?: "Default Room"
                             TopicsScreen(navController, roomName) { navController.popBackStack() }

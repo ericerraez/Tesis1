@@ -32,7 +32,12 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CustomCard(navController: NavController, title: String, searchText: String) {
+fun CustomCard(
+    navController: NavController,
+    roomTitle: String,
+    roomSubtitle: String,
+    searchText: String,
+) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
     LaunchedEffect(Unit) {
@@ -41,9 +46,9 @@ fun CustomCard(navController: NavController, title: String, searchText: String) 
             delay(1000)
         }
     }
-    if (title.contains(searchText, ignoreCase = true) || searchText.isBlank()) {
+    if (roomTitle.contains(searchText, ignoreCase = true) || searchText.isBlank()) {
         Surface(
-            color = surfaceLight,
+            color = surfaceDimLight,
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.padding(4.dp)
         ) {
@@ -67,13 +72,13 @@ fun CustomCard(navController: NavController, title: String, searchText: String) 
 
                 Column {
                     Text(
-                        text = title,
+                        text = roomTitle,
                         style = MaterialTheme.typography.headlineMedium,
                         color = surfaceContainerDark
                     )
 
                     Text(
-                        text = "Hola, soy de software",
+                        text = roomSubtitle,
                         style = MaterialTheme.typography.labelSmall,
                         color = surfaceContainerDark
                     )
@@ -93,7 +98,12 @@ fun CustomCard(navController: NavController, title: String, searchText: String) 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CustomCardTopics(navController: NavController, title: String, searchText: String) {
+fun CustomCardTopics(
+    navController: NavController,
+    topicTitle: String,
+    topicSubtitle: String,
+    searchText: String
+) {
     var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
     LaunchedEffect(Unit) {
@@ -102,9 +112,9 @@ fun CustomCardTopics(navController: NavController, title: String, searchText: St
             delay(1000)
         }
     }
-    if (title.contains(searchText, ignoreCase = true) || searchText.isBlank()) {
+    if (topicTitle.contains(searchText, ignoreCase = true) || searchText.isBlank()) {
         Surface(
-            color = surfaceLight,
+            color = surfaceDimLight,
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.padding(4.dp)
         ) {
@@ -128,13 +138,13 @@ fun CustomCardTopics(navController: NavController, title: String, searchText: St
 
                 Column {
                     Text(
-                        text = title,
-                        style = MaterialTheme.typography.headlineMedium,
+                        text = topicTitle,
+                        style = MaterialTheme.typography.headlineSmall,
                         color = surfaceContainerDark
                     )
 
                     Text(
-                        text = "Hola, soy de software",
+                        text = topicSubtitle,
                         style = MaterialTheme.typography.labelSmall,
                         color = surfaceContainerDark
                     )
@@ -154,6 +164,10 @@ fun CustomCardTopics(navController: NavController, title: String, searchText: St
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun CustomCardPreview() {
-    CustomCard(navController = NavController(LocalContext.current), title = "Hola", searchText = "")
-}
+fun CustomCardTopicsPreview() {
+    CustomCard(
+        navController = NavController(LocalContext.current),
+        roomTitle = "",
+        roomSubtitle = "",
+        searchText = "")
+    }

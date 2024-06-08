@@ -48,10 +48,10 @@ fun HistoryScreen(navController: NavHostController, onItemClick: (String) -> Uni
                 HistoryData("Marketing 2", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
                 HistoryData("Marketing 3", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
                 HistoryData("Marketing 4", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
-                HistoryData("Marketing 5", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground))
+                HistoryData("Marketing 5", "Estrategias de Marketing Digital", "10 members", "9:40 AM", painterResource(id = R.drawable.ic_launcher_foreground)),
             )
 
-            val filteredItems = historyItems.filter { it.title.contains(searchText, ignoreCase = true) }
+            val filteredItems = historyItems.filter { it.historyTitle.contains(searchText, ignoreCase = true) }
 
             LazyColumn {
                 items(filteredItems) { item ->
@@ -67,8 +67,8 @@ fun HistoryScreen(navController: NavHostController, onItemClick: (String) -> Uni
 }
 
 data class HistoryData(
-    val title: String,
-    val subtitle: String,
+    val historyTitle: String,
+    val historySubtitle: String,
     val members: String,
     val time: String,
     val image: Painter
@@ -80,7 +80,7 @@ fun HistoryItem(item: HistoryData, onItemClick: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { onItemClick(item.title) },
+            .clickable { onItemClick(item.historyTitle) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -95,14 +95,14 @@ fun HistoryItem(item: HistoryData, onItemClick: (String) -> Unit) {
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = item.title,
+                text = item.historyTitle,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "${item.members} • ${item.subtitle}",
+                text = "${item.members} • ${item.historySubtitle}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
