@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -23,12 +24,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.tesis1.screens.HistoryScreen
-import com.example.tesis1.screens.LoginScreen
-import com.example.tesis1.screens.MeetingScreen
-import com.example.tesis1.screens.RoomScreen
-import com.example.tesis1.screens.RoomTopics
-import com.example.tesis1.screens.TopicsScreen
+import com.example.tesis1.components.NavBar
+import com.example.tesis1.screens.*
 import com.example.tesis1.ui.theme.AppTheme
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -69,18 +66,28 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NavHost(navController = navController, startDestination = "login") {
-                        composable("login") { LoginScreen(navController) }
-                        composable("room") { RoomScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
-                        composable("topics") { RoomTopics(navController, roomTitle = "Default Room", topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
-                        composable("meeting") { MeetingScreen(navController) }
-                        composable("history") { HistoryScreen(navController = navController, onItemClick = { item ->
-                            navController.navigate("details/$item")
-                        }) }
-                        composable("history_topics/{roomName}") { backStackEntry ->
-                            val roomName = backStackEntry.arguments?.getString("roomName") ?: "Default Room"
-                            TopicsScreen(navController, roomName) { navController.popBackStack() }
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = "login",
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            composable("login") { LoginScreen(navController) }
+                            composable("room") { RoomScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
+                            composable("topics") { RoomTopics(navController, roomTitle = "Default Room", topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
+                            composable("meeting") { MeetingScreen(navController) }
+                            composable("history") { HistoryScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
+                            composable("topics/{roomName}") { backStackEntry ->
+                                val roomName = backStackEntry.arguments?.getString("roomName") ?: "Default Room"
+                                TopicsScreen(roomName = roomName, onBack = { navController.popBackStack() }, navController = navController)
+                            }
                         }
+                        NavBar(
+                            currentScreen = "current screen name here", // Add logic to determine the current screen
+                            navController = navController
+                        )
                     }
                 }
             }

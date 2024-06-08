@@ -41,11 +41,9 @@ fun TopicsScreen(navController: NavHostController, roomName: String, onBack: () 
                         TopicItem(topicName = topic.first, topicTime = topic.second)
                     }
                 }
-                Spacer(modifier = Modifier.weight(1f))
-
-                NavBar(currentScreen = "History", navController = navController)
             }
         }
+        NavBar(currentScreen = "Topics", navController = navController)
     }
 }
 

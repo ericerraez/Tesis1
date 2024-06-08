@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.MeetingRoom
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.VoiceChat
@@ -22,13 +21,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.tesis1.ui.theme.*
 
 @Composable
 fun NavBar(
     currentScreen: String,
-    navController: NavHostController
+    navController: NavController
 ) {
     Surface(color = outlineVariantLight) {
         Row(
