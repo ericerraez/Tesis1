@@ -15,55 +15,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.tesis1.components.CustomCard
-import com.example.tesis1.components.SearchBar
+import com.example.tesis1.components.CustomCardHistory
+import com.example.tesis1.components.NavBar
+import com.example.tesis1.components.SearchBarHistory
 import com.example.tesis1.ui.theme.surfaceDimLight
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HistoryScreen(navController: NavHostController, topicTitles: List<String>) {
+fun HistoryScreen(navController: NavHostController, historyTopicTitles: List<String>) {
     var searchText by remember { mutableStateOf("") }
-    var selectedRoom by remember { mutableStateOf<String?>(null) }
+    var selectedHistory by remember { mutableStateOf<String?>(null) }
 
-    val roomTitles = listOf(
+    val historyTitles = listOf(
         "Marketing 1",
         "Marketing 2",
         "Marketing 3",
         "Marketing 4",
         "Marketing 5",
-        "Marketing 6",
-        "Marketing 7",
-        "Marketing 8",
-        "Marketing 9",
-        "Marketing 10",
-        "Marketing 11",
-        "Marketing 12",
     )
-    val topicTitles = topicTitles
     Surface(color = surfaceDimLight) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            SearchBar(
+            SearchBarHistory(
                 searchText = searchText,
                 onSearchTextChanged = { text ->
                     searchText = text
-                    selectedRoom = null
+                    selectedHistory = null
                 },
-                roomTitles = roomTitles,
-                topicTitles = topicTitles,
-                onSearchRoomSelected = { room ->
-                    selectedRoom = room
+                historyTitles = historyTitles,
+                historyTopicTitles = historyTopicTitles,
+                onSearchHistorySelected = { history ->
+                    selectedHistory = history
                 },
-                onSearchTopicSelected = {
+                onSearchHistoryTopicSelected = {
                 }
             )
 
             Spacer(modifier = Modifier.height(1.dp))
 
-            val filteredRoomTitles = if (selectedRoom != null) {
-                listOf(selectedRoom!!)
+            val filteredHistoryTitles = if (selectedHistory != null) {
+                listOf(selectedHistory!!)
             } else {
-                roomTitles.filter {
+                historyTitles.filter {
                     it.contains(searchText, ignoreCase = true)
                 }
             }
@@ -71,16 +65,17 @@ fun HistoryScreen(navController: NavHostController, topicTitles: List<String>) {
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
             ) {
-                filteredRoomTitles.forEach { roomTitle ->
-                    CustomCard(
+                filteredHistoryTitles.forEach { historyTitle ->
+                    CustomCardHistory(
                         navController,
-                        roomTitle = roomTitle,
-                        roomSubtitle = "Estrategias Marketing",
+                        historyTitle = historyTitle,
+                        historySubtitle = historyTopicTitles.firstOrNull() ?: "",
                         searchText = searchText
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
             }
+            NavBar(currentScreen = "History", navController = navController)
         }
     }
 }

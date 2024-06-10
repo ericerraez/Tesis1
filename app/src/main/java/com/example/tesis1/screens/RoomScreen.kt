@@ -35,15 +35,7 @@ fun RoomScreen(navController: NavHostController, topicTitles: List<String>) {
         "Marketing 3",
         "Marketing 4",
         "Marketing 5",
-        "Marketing 6",
-        "Marketing 7",
-        "Marketing 8",
-        "Marketing 9",
-        "Marketing 10",
-        "Marketing 11",
-        "Marketing 12",
     )
-    val topicTitles = topicTitles
 
     Surface(
         color = surfaceDimLight
@@ -84,13 +76,13 @@ fun RoomScreen(navController: NavHostController, topicTitles: List<String>) {
                     CustomCard(
                         navController,
                         roomTitle = roomTitle,
-                        roomSubtitle = "Estrategias Marketing",
+                        roomSubtitle = topicTitles.firstOrNull() ?: "",
                         searchText = searchText
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
             }
-            NavBar(currentScreen = "Room", navController = navController)
+            NavBar(currentScreen = "Rooms", navController = navController)
         }
     }
 }

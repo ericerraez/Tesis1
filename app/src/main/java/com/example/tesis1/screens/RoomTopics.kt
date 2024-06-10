@@ -111,7 +111,7 @@ fun RoomTopics(navController: NavHostController, roomTitle: String, topicTitles:
                 }
                 Spacer(modifier = Modifier.weight(1f))
             }
-            NavBar(currentScreen = "Room", navController = navController)
+            NavBar(currentScreen = "Rooms", navController = navController)
         }
     }
 }

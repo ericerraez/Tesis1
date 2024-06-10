@@ -1,10 +1,12 @@
 package com.example.tesis1.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -31,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,7 +52,9 @@ fun SearchBar(
 ) {
     var isDropdownExpanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+    ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -59,7 +64,7 @@ fun SearchBar(
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedTextField(
                 value = searchText,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(30.dp),
                 onValueChange = { newValue ->
                     onSearchTextChanged(newValue)
                     isDropdownExpanded = newValue.isNotEmpty()
@@ -70,13 +75,14 @@ fun SearchBar(
                     focusedTextColor = surfaceContainerDark,
                     unfocusedTextColor = surfaceContainerDark,
                     cursorColor = surfaceContainerDark,
-                    focusedBorderColor = surfaceContainerDark,
-                    unfocusedBorderColor = surfaceContainerDark,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
                 ),
                 singleLine = true,
                 modifier = Modifier
                     .weight(1f)
                     .padding(8.dp)
+                    .background(outlineVariantLight, shape = RoundedCornerShape(30.dp))
             )
             if (searchText.isNotEmpty()) {
                 Icon(
@@ -102,8 +108,7 @@ fun SearchBar(
                 Surface(
                     color = surfaceDimLight,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Min)
+                        .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
                     Column {
@@ -129,6 +134,108 @@ fun SearchBar(
                                             isDropdownExpanded = false
                                         },
                                     color = surfaceContainerDark
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBarHistory(
+    searchText: String,
+    onSearchTextChanged: (String) -> Unit,
+    historyTitles: List<String>,
+    historyTopicTitles: List<String>,
+    onSearchHistorySelected: (String) -> Unit,
+    onSearchHistoryTopicSelected: (String) -> Unit
+) {
+    var isDropdownExpanded by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Spacer(modifier = Modifier.width(8.dp))
+            OutlinedTextField(
+                value = searchText,
+                shape = RoundedCornerShape(16.dp),
+                onValueChange = { newValue ->
+                    onSearchTextChanged(newValue)
+                    isDropdownExpanded = newValue.isNotEmpty()
+                },
+                placeholder = { Text("Search in the History", color = surfaceContainerDark) },
+                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search", tint = surfaceContainerDark ) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedTextColor = surfaceContainerDark,
+                    unfocusedTextColor = surfaceContainerDark,
+                    cursorColor = surfaceContainerDark,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                ),
+                singleLine = true,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+                    .background(outlineVariantLight, shape = RoundedCornerShape(30.dp))
+            )
+            if (searchText.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = "Clear",
+                    tint = surfaceContainerDark,
+                    modifier = Modifier
+                        .clickable {
+                            onSearchTextChanged("")
+                            isDropdownExpanded = false
+                        }
+                        .padding(end = 8.dp)
+                )
+            }
+        }
+
+        if (isDropdownExpanded && searchText.isNotEmpty()) {
+            val filteredHistoryTitles = historyTitles.filter {
+                it.contains(searchText, ignoreCase = true)
+            }
+
+            if (filteredHistoryTitles.isNotEmpty()) {
+                Surface(
+                    color = surfaceDimLight,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Column {
+                        filteredHistoryTitles.forEach { historyTopicTitle ->
+                            Column {
+                                Text(
+                                    text = historyTopicTitle,
+                                    modifier = Modifier
+                                        .padding(vertical = 2.dp)
+                                        .clickable {
+                                            onSearchHistorySelected(historyTopicTitle)
+                                            isDropdownExpanded = false
+                                        },
+                                    color = surfaceContainerDark
+                                )
+                                historyTopicTitles.forEach { historyTopicTitle ->
+                                    Text(
+                                        text = "    $historyTopicTitle",
+                                        modifier = Modifier
+                                            .padding(vertical = 2.dp)
+                                            .clickable {
+                                                onSearchHistoryTopicSelected(historyTopicTitle)
+                                                isDropdownExpanded = false
+                                            },
+                                        color = surfaceContainerDark
                                     )
                                 }
                             }

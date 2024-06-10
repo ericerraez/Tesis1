@@ -1,11 +1,17 @@
 package com.example.tesis1.components
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MeetingRoom
 import androidx.compose.material.icons.filled.Settings
@@ -15,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -67,22 +75,23 @@ fun NavBarItem(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val colors = MaterialTheme.colorScheme
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable(onClick = onClick)
+        modifier = Modifier
+            .clickable(onClick = onClick)
     ) {
         Icon(
             imageVector = icon,
             contentDescription = title,
-            tint = if (isSelected) MaterialTheme.colorScheme.primary else onSecondaryContainerLight,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
+            tint = onSecondaryContainerLight,
+            modifier = Modifier
+                .padding(bottom = 3.dp)
+                .size(width = 56.dp, height = 32.dp)
+                .background(if (isSelected) secondaryContainerLight else Color.Transparent, shape = RoundedCornerShape(16.dp)))
         Text(
             text = title,
             style = MaterialTheme.typography.labelSmall,
-            color = if (isSelected) MaterialTheme.colorScheme.primary else onSecondaryContainerLight
+            color = onSecondaryContainerLight
         )
     }
 }
@@ -90,5 +99,5 @@ fun NavBarItem(
 @Preview
 @Composable
 fun NavBarPreview() {
-    NavBar(currentScreen = "Room", navController = NavHostController(LocalContext.current))
+    NavBar(currentScreen = "Rooms", navController = NavHostController(LocalContext.current))
 }

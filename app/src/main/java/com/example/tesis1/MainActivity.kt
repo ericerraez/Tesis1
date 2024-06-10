@@ -1,7 +1,5 @@
 package com.example.tesis1
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
@@ -16,14 +14,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.tesis1.appnavigation.Navigation
 import com.example.tesis1.components.NavBar
 import com.example.tesis1.screens.*
 import com.example.tesis1.ui.theme.AppTheme
@@ -60,36 +55,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
             AppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = "login",
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            composable("login") { LoginScreen(navController) }
-                            composable("room") { RoomScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
-                            composable("topics") { RoomTopics(navController, roomTitle = "Default Room", topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
-                            composable("meeting") { MeetingScreen(navController) }
-                            composable("history") { HistoryScreen(navController, topicTitles = listOf("Estrategias Marketing", "Diseño de Interfaces")) }
-                            composable("topics/{roomName}") { backStackEntry ->
-                                val roomName = backStackEntry.arguments?.getString("roomName") ?: "Default Room"
-                                TopicsScreen(roomName = roomName, onBack = { navController.popBackStack() }, navController = navController)
-                            }
-                        }
-                        NavBar(
-                            currentScreen = "current screen name here", // Add logic to determine the current screen
-                            navController = navController
-                        )
-                    }
-                }
+                Navigation()  // Llama a la función para la navegación
             }
         }
 
