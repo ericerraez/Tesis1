@@ -98,16 +98,22 @@ fun MeetingScreen(navController: NavHostController) {
     val minutes = elapsedTime.intValue / 60
     val seconds = elapsedTime.intValue % 60
     val participants = listOf("Participant 1", "Participant 2", "Participant 3", "Participant 4", "Participant 5",
-        "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10", "Participant 11")
+        "Participant 6", "Participant 7", "Participant 8", "Participant 9", "Participant 10", "Participant 11",
+        "Participant 12", "Participant 13", "Participant 14", "Participant 15", "Participant 16", "Participant 17",
+        "Participant 18", "Participant 19", "Participant 20")
 
     Surface(
         color = surfaceDimLight,
         modifier = Modifier.fillMaxSize()
     ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 96.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -180,11 +186,13 @@ fun MeetingScreen(navController: NavHostController) {
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
-
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(72.dp)) // Space for fixed button
+        }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp)
                     .clickable {
                         if (ContextCompat.checkSelfPermission(
                                 context,
