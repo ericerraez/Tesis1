@@ -29,7 +29,7 @@ fun Navigation() {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = "room",
+                startDestination = "login",
                 modifier = Modifier.weight(1f)
             ) {
                 composable("login") { LoginScreen(navController) }
@@ -38,6 +38,7 @@ fun Navigation() {
                 composable("meeting") { MeetingScreen(navController) }
                 composable("history") { HistoryScreen(navController, historyTopicTitles = historyTopicTitles) }
                 composable("topicsHistory") { TopicsScreen(navController, historyTitle = "Default History", historyTopicTitles = historyTopicTitles) }
+                composable("settings") { SettingsScreen(navController) }
             }
         }
     }
