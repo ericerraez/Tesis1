@@ -6,16 +6,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tesis1.components.CustomCard
-import com.example.tesis1.components.CustomCardHistory
 import com.example.tesis1.components.NavBar
 import com.example.tesis1.components.SearchBarHistory
 import com.example.tesis1.ui.theme.surfaceDimLight
@@ -33,6 +30,7 @@ fun HistoryScreen(navController: NavHostController, historyTopicTitles: List<Str
         "Marketing 4",
         "Marketing 5",
     )
+
     Surface(color = surfaceDimLight) {
         Column(
             modifier = Modifier.fillMaxSize()
@@ -48,8 +46,7 @@ fun HistoryScreen(navController: NavHostController, historyTopicTitles: List<Str
                 onSearchHistorySelected = { history ->
                     selectedHistory = history
                 },
-                onSearchHistoryTopicSelected = {
-                }
+                onSearchHistoryTopicSelected = {}
             )
 
             Spacer(modifier = Modifier.height(1.dp))
@@ -61,15 +58,17 @@ fun HistoryScreen(navController: NavHostController, historyTopicTitles: List<Str
                     it.contains(searchText, ignoreCase = true)
                 }
             }
-            Column(Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
+
+            Column(
+                Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
                 filteredHistoryTitles.forEach { historyTitle ->
-                    CustomCardHistory(
-                        navController,
-                        historyTitle = historyTitle,
-                        historySubtitle = historyTopicTitles.firstOrNull() ?: "",
+                    CustomCard(
+                        navController = navController,
+                        roomTitle = historyTitle,
+                        roomSubtitle = historyTopicTitles.firstOrNull() ?: "",
                         searchText = searchText
                     )
                 }
@@ -78,4 +77,20 @@ fun HistoryScreen(navController: NavHostController, historyTopicTitles: List<Str
             NavBar(currentScreen = "History", navController = navController)
         }
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun HistoryScreenPreview() {
+    HistoryScreen(
+        navController = rememberNavController(),
+        historyTopicTitles = listOf(
+            "Estrategias Marketing",
+            "Diseño de Interfaces",
+            "Desarrollo de Software",
+            "Cuidado del Ambiente",
+            "Cuidado Canino"
+        )
+    )
 }

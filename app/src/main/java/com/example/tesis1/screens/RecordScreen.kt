@@ -1,95 +1,137 @@
 package com.example.tesis1.screens
 
-import android.util.Log
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.tesis1.ApiService
-import com.example.tesis1.ui.theme.AppTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import org.json.JSONObject
-import retrofit2.http.GET
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.tesis1.components.NavBar
+import com.example.tesis1.ui.theme.surfaceDimLight
+import kotlinx.coroutines.delay
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RecordScreen() {
-    var transcription = remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
+fun RecordScreen(navController: NavHostController, historyTitle: String, recordTitle: String) {
+    val transcriptions = remember { mutableStateOf(listOf<String>()) }
+    var currentTime by remember { mutableStateOf(LocalTime.now()) }
 
     LaunchedEffect(Unit) {
-        Log.d("RecordScreen", "LaunchedEffect triggered")
-        coroutineScope.launch {
-            fetchLastTranscription { transcriptionText ->
-                Log.d("RecordScreen", "Transcription fetched: $transcriptionText")
-                transcription.value = transcriptionText
-            }
+        while (true) {
+            currentTime = LocalTime.now()
+            delay(1000)
         }
     }
 
-    AppTheme {
+    Surface(
+        color = surfaceDimLight,
+        modifier = Modifier.fillMaxSize()
+    ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(text = transcription.value)
+            // Header Row
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Text(
+                    text = recordTitle,
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = Modifier.padding(start = 8.dp),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = { /* TODO: Search action */ }) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                IconButton(onClick = { /* TODO: More options */ }) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = "More",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
+            // Transcriptions List
+            transcriptions.value.forEach { transcription ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(8.dp))
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Marco Guaman",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = "Replied: Jonnathan Vallejo",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    Text(
+                        text = transcription,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = currentTime.format(DateTimeFormatter.ofPattern("HH:mm a")),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+            NavBar(currentScreen = "Record", navController = navController)
         }
     }
 }
 
-fun fetchLastTranscription(onTranscriptionFetched: (String) -> Unit) {
-    Log.d("fetchLastTranscription", "Started fetching last transcription")
-    val retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.56.1:8000/api/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(OkHttpClient.Builder().build())
-        .build()
-
-    val apiService = retrofit.create(ApiService::class.java)
-    apiService.getLastTranscription().enqueue(object : Callback<ResponseBody> {
-        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-            Log.d("fetchLastTranscription", "Received response: $response")
-            if (response.isSuccessful) {
-                 val responseBody = response.body()?.string()
-                val jsonResponse = responseBody?.let { JSONObject(it) }
-                val transcription = jsonResponse?.getString("text") ?: "No transcription found"
-                onTranscriptionFetched(transcription)
-            } else {
-                onTranscriptionFetched("Failed to fetch transcription")
-            }
-        }
-
-        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-            Log.e("fetchLastTranscription", "Failed to fetch transcription: ${t.message}")
-            onTranscriptionFetched("Error: ${t.message}")
-        }
-    })
-}
-
-interface ApiService {
-    @GET("get_last_transcription/")
-    fun getLastTranscription(): Call<ResponseBody>
-}
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecordScreen() {
-    RecordScreen()
+    RecordScreen(navController = rememberNavController(), historyTitle = "Marketing 1", recordTitle = "Record 1")
 }

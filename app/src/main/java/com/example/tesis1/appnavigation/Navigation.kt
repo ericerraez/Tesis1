@@ -8,9 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.tesis1.screens.*
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -29,7 +31,7 @@ fun Navigation() {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = "room",
+                startDestination = "login",
                 modifier = Modifier.weight(1f)
             ) {
                 composable("login") { LoginScreen(navController) }
@@ -37,7 +39,31 @@ fun Navigation() {
                 composable("topics") { RoomTopics(navController, roomTitle = "Default Room", topicTitles = topicTitles) }
                 composable("meeting") { MeetingScreen(navController) }
                 composable("history") { HistoryScreen(navController, historyTopicTitles = historyTopicTitles) }
-                composable("topicsHistory") { TopicsScreen(navController, historyTitle = "Default History", historyTopicTitles = historyTopicTitles) }
+                composable(
+                    "topics/{historyTitle}",
+                    arguments = listOf(navArgument("historyTitle") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val historyTitle = backStackEntry.arguments?.getString("historyTitle") ?: ""
+                    TopicsScreen(navController, historyTitle, historyTopicTitles)
+                }
+                composable(
+                    "records/{topicTitle}",
+                    arguments = listOf(navArgument("topicTitle") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val topicTitle = backStackEntry.arguments?.getString("topicTitle") ?: ""
+                    RecordsScreen(navController, topicTitle, listOf("Record 1", "Record 2", "Record 3", "Record 4"))
+                }
+                composable(
+                    "recordDetail/{historyTitle}/{recordTitle}",
+                    arguments = listOf(
+                        navArgument("historyTitle") { type = NavType.StringType },
+                        navArgument("recordTitle") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    val historyTitle = backStackEntry.arguments?.getString("historyTitle") ?: ""
+                    val recordTitle = backStackEntry.arguments?.getString("recordTitle") ?: ""
+                    RecordScreen(navController, historyTitle, recordTitle)
+                }
             }
         }
     }
