@@ -33,7 +33,7 @@ fun RecordsScreen(navController: NavHostController, historyTitle: String, histor
     var selectedHistory by remember { mutableStateOf<String?>(null) }
 
     Surface(
-        color = Color(0xFFFFF4E1),
+        color = surfaceDimLight,
         modifier = Modifier.fillMaxSize()
     ) {
         Column {
@@ -47,7 +47,7 @@ fun RecordsScreen(navController: NavHostController, historyTitle: String, histor
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color(0xFF6E6E6E),
+                    tint = surfaceContainerDark,
                     modifier = Modifier.clickable { navController.navigateUp() }
                 )
                 Text(
@@ -56,14 +56,14 @@ fun RecordsScreen(navController: NavHostController, historyTitle: String, histor
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .weight(1f),
-                    color = Color(0xFF6E6E6E),
+                    color = surfaceContainerDark,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = "Search",
-                    tint = Color(0xFF6E6E6E),
+                    tint = surfaceContainerDark,
                     modifier = Modifier.clickable {
                         isSearchVisible.value = !isSearchVisible.value
                         if (!isSearchVisible.value) {
@@ -74,7 +74,7 @@ fun RecordsScreen(navController: NavHostController, historyTitle: String, histor
                 Icon(
                     imageVector = Icons.Filled.MoreVert,
                     contentDescription = "More",
-                    tint = Color(0xFF6E6E6E),
+                    tint = surfaceContainerDark,
                     modifier = Modifier.clickable { /* Handle three dots icon click */ }
                 )
             }
@@ -111,7 +111,7 @@ fun RecordsScreen(navController: NavHostController, historyTitle: String, histor
             }
 
             // Navigation Bar
-            NavBar(currentScreen = "Records", navController = navController)
+            NavBar(currentScreen = "History", navController = navController)
         }
     }
 }

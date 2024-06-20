@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tesis1.ApiService
 import com.example.tesis1.components.CircularCard
 import com.example.tesis1.components.SquareCard
@@ -53,7 +54,7 @@ import java.io.File
 import kotlin.math.min
 
 @Composable
-fun MeetingScreen(navController: NavHostController) {
+fun MeetingScreen(navController: NavHostController, meetingTitle: String, meetingDescription: String) {
     val coroutineScope = rememberCoroutineScope()
     val elapsedTime = remember { mutableIntStateOf(0) }
     val context = LocalContext.current
@@ -141,14 +142,14 @@ fun MeetingScreen(navController: NavHostController) {
                 )
             }
             Text(
-                text = "Meeting Title",
+                text = meetingTitle,
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 16.dp),
                 color = surfaceContainerDark
             )
             Text(
-                text = "This is a small description of the meeting.",
+                text = meetingDescription,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -319,5 +320,6 @@ fun ThreeDotsIcon(
 @Preview
 @Composable
 fun MeetingScreenPreview() {
-    MeetingScreen(navController = NavHostController(LocalContext.current))
+    val navController = rememberNavController()
+    MeetingScreen(navController, "Meeting Title", "Meeting Description")
 }

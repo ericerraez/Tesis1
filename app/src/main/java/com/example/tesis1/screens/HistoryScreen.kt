@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tesis1.components.CustomCard
+import com.example.tesis1.components.CustomCardHistory
 import com.example.tesis1.components.NavBar
 import com.example.tesis1.components.SearchBarHistory
 import com.example.tesis1.ui.theme.surfaceDimLight
@@ -65,10 +66,10 @@ fun HistoryScreen(navController: NavHostController, historyTopicTitles: List<Str
                     .verticalScroll(rememberScrollState())
             ) {
                 filteredHistoryTitles.forEach { historyTitle ->
-                    CustomCard(
+                    CustomCardHistory(
                         navController = navController,
-                        roomTitle = historyTitle,
-                        roomSubtitle = historyTopicTitles.firstOrNull() ?: "",
+                        historyTitle = historyTitle,
+                        historySubtitle = historyTopicTitles.firstOrNull() ?: "",
                         searchText = searchText
                     )
                 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tesis1.components.NavBar
+import com.example.tesis1.ui.theme.surfaceContainerDark
 import com.example.tesis1.ui.theme.surfaceDimLight
 import kotlinx.coroutines.delay
 import java.time.LocalTime
@@ -60,28 +61,28 @@ fun RecordScreen(navController: NavHostController, historyTitle: String, recordT
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onSurface
+                        tint = surfaceContainerDark
                     )
                 }
                 Text(
                     text = recordTitle,
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(start = 8.dp),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = surfaceContainerDark
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = { /* TODO: Search action */ }) {
                     Icon(
                         imageVector = Icons.Filled.Search,
                         contentDescription = "Search",
-                        tint = MaterialTheme.colorScheme.onSurface
+                        tint = surfaceContainerDark
                     )
                 }
                 IconButton(onClick = { /* TODO: More options */ }) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
                         contentDescription = "More",
-                        tint = MaterialTheme.colorScheme.onSurface
+                        tint = surfaceContainerDark
                     )
                 }
             }
@@ -124,7 +125,7 @@ fun RecordScreen(navController: NavHostController, historyTitle: String, recordT
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            NavBar(currentScreen = "Record", navController = navController)
+            NavBar(currentScreen = "History", navController = navController)
         }
     }
 }

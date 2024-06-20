@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tesis1.components.CustomCardTopics
+import com.example.tesis1.components.CustomCardTopicsHistory
 import com.example.tesis1.components.NavBar
 import com.example.tesis1.components.SearchBarHistory
 import com.example.tesis1.ui.theme.*
@@ -97,16 +98,16 @@ fun TopicsScreen(navController: NavHostController, historyTitle: String, history
                     .verticalScroll(rememberScrollState())
             ) {
                 historyTopicTitles.forEach { topicTitle ->
-                    CustomCardTopics(
+                    CustomCardTopicsHistory(
                         navController = navController,
-                        topicTitle = topicTitle,
-                        topicSubtitle = historyTitle,
+                        historyTopicTitle = topicTitle,
+                        historyTopicSubtitle = historyTitle,
                         searchText = searchText
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
             }
-            NavBar(currentScreen = "Topics", navController = navController)
+            NavBar(currentScreen = "History", navController = navController)
         }
     }
 }
