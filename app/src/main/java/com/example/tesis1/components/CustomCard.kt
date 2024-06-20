@@ -113,7 +113,7 @@ fun CustomCardTopics(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .padding(4.dp)
-                .clickable { navController.navigate("records/$topicTitle") }
+                .clickable { navController.navigate("meeting/$topicSubtitle/$topicTitle") }
         ) {
             Row(
                 modifier = Modifier
@@ -194,7 +194,7 @@ fun CustomCardHistory(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .padding(4.dp)
-                .clickable { navController.navigate("topics/$historyTitle") }
+                .clickable { navController.navigate("historyTopics/$historyTitle") }
         ) {
             Row(
                 modifier = Modifier

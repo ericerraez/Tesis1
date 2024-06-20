@@ -36,11 +36,27 @@ fun Navigation() {
             ) {
                 composable("login") { LoginScreen(navController) }
                 composable("room") { RoomScreen(navController, topicTitles = topicTitles) }
-                composable("topics") { RoomTopics(navController, roomTitle = "Default Room", topicTitles = topicTitles) }
-                composable("meeting") { MeetingScreen(navController) }
+                composable(
+                    "topics/{roomTitle}",
+                    arguments = listOf(navArgument("roomTitle") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val roomTitle = backStackEntry.arguments?.getString("roomTitle") ?: ""
+                    RoomTopics(navController, roomTitle, topicTitles)
+                }
+                composable(
+                    "meeting/{roomTitle}/{topicTitle}",
+                    arguments = listOf(
+                        navArgument("roomTitle") { type = NavType.StringType },
+                        navArgument("topicTitle") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    val roomTitle = backStackEntry.arguments?.getString("roomTitle") ?: ""
+                    val topicTitle = backStackEntry.arguments?.getString("topicTitle") ?: ""
+                    MeetingScreen(navController, meetingTitle = roomTitle, meetingDescription = topicTitle)
+                }
                 composable("history") { HistoryScreen(navController, historyTopicTitles = historyTopicTitles) }
                 composable(
-                    "topics/{historyTitle}",
+                    "historyTopics/{historyTitle}",
                     arguments = listOf(navArgument("historyTitle") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val historyTitle = backStackEntry.arguments?.getString("historyTitle") ?: ""
@@ -64,6 +80,7 @@ fun Navigation() {
                     val recordTitle = backStackEntry.arguments?.getString("recordTitle") ?: ""
                     RecordScreen(navController, historyTitle, recordTitle)
                 }
+                composable("settings") { SettingsScreen(navController) }
             }
         }
     }
