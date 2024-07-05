@@ -1,11 +1,10 @@
 package com.example.tesis1.screens
 
+import ApiService
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaRecorder
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.tesis1.ApiService
 import com.example.tesis1.components.CircularCard
 import com.example.tesis1.components.SquareCard
 import com.example.tesis1.ui.theme.*
@@ -52,6 +50,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import kotlin.math.min
+
+fun startRecording(context: Context, onStarted: (MediaRecorder, File) -> Unit) {
+    val file = File.createTempFile("audio", ".wav", context.cacheDir) // Cambiado a .wav
+    val recorder = MediaRecorder().apply {
+        setAudioSource(MediaRecorder.AudioSource.MIC)
+        setOutputFormat(MediaRecorder.OutputFormat.MPEG_4) // Cambiado a MPEG_4 para obtener .wav
+        setAudioEncoder(MediaRecorder.AudioEncoder.AAC) // Cambiado a AAC para mejor calidad
+        setOutputFile(file.absolutePath)
+        prepare()
+        start()
+    }
+    onStarted(recorder, file)
+}
 
 @Composable
 fun MeetingScreen(navController: NavHostController, meetingTitle: String, meetingDescription: String) {
@@ -72,15 +83,6 @@ fun MeetingScreen(navController: NavHostController, meetingTitle: String, meetin
                 mediaRecorder = recorder
                 audioFile = file
                 isRecording = true
-                Handler(Looper.getMainLooper()).postDelayed({
-                    stopRecording(mediaRecorder)
-                    isRecording = false
-                    audioFile?.let { file ->
-                        uploadAudio(file) { transcriptionText ->
-                            transcription = transcriptionText
-                        }
-                    }
-                }, 5000)
             }
         } else {
             Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
@@ -110,111 +112,113 @@ fun MeetingScreen(navController: NavHostController, meetingTitle: String, meetin
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 96.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 96.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                BackArrow(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    onClick = { navController.navigateUp() }
-                )
-                Spacer(modifier = Modifier.weight(1f))
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    BackArrow(
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        onClick = { navController.navigateUp() }
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
 
+                    Text(
+                        text = "$minutes min $seconds sec",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        color = surfaceContainerDark
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    ThreeDotsIcon(
+                        modifier = Modifier.padding(bottom = 16.dp),
+                        onClick = { /* Handle three dots icon click */ }
+                    )
+                }
                 Text(
-                    text = "$minutes min $seconds sec",
+                    text = meetingTitle,
+                    style = MaterialTheme.typography.headlineLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    color = surfaceContainerDark
+                )
+                Text(
+                    text = meetingDescription,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 16.dp),
                     color = surfaceContainerDark
                 )
-                Spacer(modifier = Modifier.weight(1f))
 
-                ThreeDotsIcon(
-                    modifier = Modifier.padding(bottom = 16.dp),
-                    onClick = { /* Handle three dots icon click */ }
-                )
-            }
-            Text(
-                text = meetingTitle,
-                style = MaterialTheme.typography.headlineLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp),
-                color = surfaceContainerDark
-            )
-            Text(
-                text = meetingDescription,
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 16.dp),
-                color = surfaceContainerDark
-            )
+                val rows = (participants.size + 1) / 3 + 1
 
-            val rows = (participants.size + 1) / 3 + 1
-
-            repeat(rows) { rowIndex ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    if (rowIndex == 0) {
-                        Spacer(modifier = Modifier.width(5.dp))
-                        CircularCard(title = "ANI", modifier = Modifier.weight(1f))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        if (participants.isNotEmpty()) {
-                            SquareCard(title = participants[0], modifier = Modifier.weight(1f))
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        if (participants.size > 1) {
-                            SquareCard(title = participants[1], modifier = Modifier.weight(1f))
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                    } else {
-                        val startParticipantIndex = (rowIndex - 1) * 3 + 2
-                        val endParticipantIndex = min(startParticipantIndex + 3, participants.size)
-                        for (i in startParticipantIndex until endParticipantIndex) {
+                repeat(rows) { rowIndex ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (rowIndex == 0) {
+                            Spacer(modifier = Modifier.width(5.dp))
+                            CircularCard(title = "ANI", modifier = Modifier.weight(1f))
                             Spacer(modifier = Modifier.width(8.dp))
-                            SquareCard(title = participants[i], modifier = Modifier.weight(1f))
+                            if (participants.isNotEmpty()) {
+                                SquareCard(title = participants[0], modifier = Modifier.weight(1f))
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            if (participants.size > 1) {
+                                SquareCard(title = participants[1], modifier = Modifier.weight(1f))
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                        } else {
+                            val startParticipantIndex = (rowIndex - 1) * 3 + 2
+                            val endParticipantIndex = min(startParticipantIndex + 3, participants.size)
+                            for (i in startParticipantIndex until endParticipantIndex) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                SquareCard(title = participants[i], modifier = Modifier.weight(1f))
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
                         }
-                        Spacer(modifier = Modifier.width(8.dp))
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(72.dp)) // Space for fixed button
             }
-            Spacer(modifier = Modifier.height(72.dp)) // Space for fixed button
-        }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
                     .clickable {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.RECORD_AUDIO
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                        if (isRecording) {
+                            stopRecording(mediaRecorder)
+                            isRecording = false
+                            audioFile?.let { file ->
+                                uploadAudio(file) { transcriptionText ->
+                                    transcription = transcriptionText
+                                    // Aquí puedes actualizar el estado para reflejar la transcripción en la UI
+                                }
+                            }
                         } else {
-                            startRecording(context) { recorder, file ->
-                                mediaRecorder = recorder
-                                audioFile = file
-                                isRecording = true
-                                Handler(Looper.getMainLooper()).postDelayed({
-                                    stopRecording(mediaRecorder)
-                                    isRecording = false
-                                    audioFile?.let { file ->
-                                        uploadAudio(file) { transcriptionText ->
-                                            transcription = transcriptionText
-                                        }
-                                    }
-                                }, 5000)
+                            if (ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.RECORD_AUDIO
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                            } else {
+                                startRecording(context) { recorder, file ->
+                                    mediaRecorder = recorder
+                                    audioFile = file
+                                    isRecording = true
+                                }
                             }
                         }
                     }
@@ -239,19 +243,6 @@ fun MeetingScreen(navController: NavHostController, meetingTitle: String, meetin
     }
 }
 
-fun startRecording(context: Context, onStarted: (MediaRecorder, File) -> Unit) {
-    val file = File.createTempFile("audio", ".3gp", context.cacheDir)
-    val recorder = MediaRecorder().apply {
-        setAudioSource(MediaRecorder.AudioSource.MIC)
-        setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-        setOutputFile(file.absolutePath)
-        prepare()
-        start()
-    }
-    onStarted(recorder, file)
-}
-
 fun stopRecording(mediaRecorder: MediaRecorder?) {
     mediaRecorder?.apply {
         try {
@@ -265,13 +256,13 @@ fun stopRecording(mediaRecorder: MediaRecorder?) {
 
 fun uploadAudio(file: File, onTranscriptionFetched: (String) -> Unit) {
     val retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.56.1:8000/api/")
+        .baseUrl("http://192.168.1.16:8000/")
         .addConverterFactory(GsonConverterFactory.create())
         .client(OkHttpClient.Builder().build())
         .build()
 
     val apiService = retrofit.create(ApiService::class.java)
-    val requestBody = RequestBody.create("audio/3gp".toMediaTypeOrNull(), file)
+    val requestBody = RequestBody.create("audio/wav".toMediaTypeOrNull(), file)
     val body = MultipartBody.Part.createFormData("audio", file.name, requestBody)
 
     apiService.uploadAudio(body).enqueue(object : Callback<ResponseBody> {
@@ -290,6 +281,7 @@ fun uploadAudio(file: File, onTranscriptionFetched: (String) -> Unit) {
         }
     })
 }
+
 
 @Composable
 fun BackArrow(
